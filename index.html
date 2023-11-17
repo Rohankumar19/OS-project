@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Processing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin: 0;
+        }
+
+        #orderForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        .order-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-list {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px;
+        }
+
+        h2 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0;
+        }
+
+        .order-complete {
+            background-color: #27ae60;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .order-complete:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Processing System</h1>
+
+    <form id="orderForm">
+        <label for="orderID">Order ID:</label>
+        <input type="text" id="orderID" required><br><br>
+
+        <label for="dishName">Dish Name:</label>
+        <input type="text" id="dishName" required><br><br>
+
+        <label for="cookingTime">Cooking Time (in minutes):</label>
+        <input type="number" id="cookingTime" required><br><br>
+
+        <button type="button" onclick="addOrder()">Add Order</button>
+    </form>
+
+    <button type="button" onclick="processOrders()">Process Orders</button>
+
+    <div class="order-section">
+        <div class="order-list">
+            <h2>Pending Orders</h2>
+            <div id="pendingOrders"></div>
+        </div>
+
+        <div class="order-list">
+            <h2>Ready Orders</h2>
+            <div id="readyOrders"></div>
+        </div>
+    </div>
+
+    <script>
+        var orders = [];
+
+        function addOrder() {
+            var orderID = document.getElementById("orderID").value;
+            var dishName = document.getElementById("dishName").value;
+            var cookingTime = document.getElementById("cookingTime").value;
+
+            var newOrder = {
+                orderID: orderID,
+                dishName: dishName,
+                cookingTime: cookingTime,
+                status: "Pending"
+            };
+
+            orders.push(newOrder);
+            document.getElementById("orderForm").reset();
+        }
+
+        function processOrders() {
+            orders.sort(function (a, b) {
+                return a.cookingTime - b.cookingTime;
+            });
+
+            var pendingOutput = "";
+            var readyOutput = "";
+
+            for (var i = 0; i < orders.length; i++) {
+                if (orders[i].status === "Pending") {
+                    pendingOutput += "Order ID: " + orders[i].orderID + ", Dish: " + orders[i].dishName + ", Cooking Time: " + orders[i].cookingTime + " minutes";
+                    pendingOutput += ' <button onclick="markOrderReady(' + i + ')">Order Complete</button><br>';
+                } else if (orders[i].status === "Ready") {
+                    readyOutput += "Order ID: " + orders[i].orderID + ", Dish: " + orders[i].dishName + ", Cooking Time: " + orders[i].cookingTime + " minutes<br>";
+                }
+            }
+
+            document.getElementById("pendingOrders").innerHTML = "<h2>Pending Orders</h2>" + pendingOutput;
+            document.getElementById("readyOrders").innerHTML = "<h2>Ready Orders</h2>" + readyOutput;
+        }
+
+        function markOrderReady(index) {
+            orders[index].status = "Ready";
+            processOrders(); 
+        }
+
+    </script>
+</body>
+</html>
